@@ -30,7 +30,11 @@ const Pagination = ({
         <button
           onClick={onPrev}
           disabled={page <= 1 || loading}
-          style={styles.button}
+          style={{
+            ...styles.button,
+            opacity: (page <= 1 || loading) ? 0.4 : 1,
+            cursor: (page <= 1 || loading) ? 'not-allowed' : 'pointer'
+          }}
         >
           Previous
         </button>
@@ -42,7 +46,11 @@ const Pagination = ({
         <button
           onClick={onNext}
           disabled={page >= totalPages || loading}
-          style={styles.button}
+          style={{
+            ...styles.button,
+            opacity: (page >= totalPages || loading) ? 0.4 : 1,
+            cursor: (page >= totalPages || loading) ? 'not-allowed' : 'pointer'
+          }}
         >
           Next
         </button>

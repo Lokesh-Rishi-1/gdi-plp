@@ -27,8 +27,8 @@ const ProductList = ({ products, loading, error }) => {
 const styles = {
   grid: {
     display: 'grid',
-    // Responsive grid — fills available space, min 200px per card
-    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+    // Responsive grid — fills available space, min 240px per card
+    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
     gap: '16px'
   },
   message: {
