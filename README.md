@@ -17,18 +17,7 @@ Open http://localhost:5173
 
 ## Project Structure
 
-src/
-├── components/      # UI components => rendering only
-│   ├── ProductCard.jsx
-│   ├── ProductList.jsx
-│   └── Pagination.jsx
-├── hooks/
-│   └── useProducts.js  # connects data layer to React state
-├── utils/
-│   ├── cache.js        # in-memory cache with TTL
-│   └── fetchClient.js  # API calls, cache checks, race condition handling
-├── App.jsx             # root component
-└── index.css           # global styles
+![project_structure](<Screenshot 2026-04-11 at 11.57.53 AM.png>)
 
 ---
 
