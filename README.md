@@ -38,6 +38,18 @@ No fetch calls, no business logic.
 
 ---
 
+### Variable Page Size
+
+The default is 16 products per page as specified. The page size
+selector (8/16/24) is an optional enhancement that demonstrates
+a deliberate cache key design decision, i.e. keys are composed from
+`limit` and `skip` rather than page numbers. This means changing
+page size creates entirely new cache keys with no collision against
+existing entries. It's not extra complexity. It's the natural
+result of building the cache correctly from the start.
+
+---
+
 ## Cache (utils/cache.js)
 
 In-memory Map-based cache. Single exported instance so the

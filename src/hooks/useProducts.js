@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { fetchProducts } from '../utils/fetchClient'
 
 const PAGE_SIZE_OPTIONS = [8, 16, 24]
@@ -13,25 +13,36 @@ const useProducts = () => {
   const [error, setError] = useState(null)
   const [fromCache, setFromCache] = useState(false)
 
-  // Derived values. Calculated from state, not stored separately.
+  // Tracks the latest request inside the hook
+  const requestIdRef = useRef(0)
   const skip = (page - 1) * pageSize
+  // Derived values. Calculated from state, not stored separately.
   const totalPages = Math.ceil(total / pageSize)
 
   const loadProducts = useCallback(async () => {
+    const requestId = ++requestIdRef.current
     setLoading(true)
     setError(null)
 
     try {
       const result = await fetchProducts(pageSize, skip)
+      // A newer request has fired. Don't touch state
+      if (requestId !== requestIdRef.current) return
       setProducts(result.products)
       setTotal(result.total)
       setFromCache(result.fromCache)
     } catch (err) {
       // Silently ignore stale requests.
+      if (requestId !== requestIdRef.current) return
+      // Stale request from fetchClient. Already handled above,
+      // but kept as safety net
       if (err.message === 'STALE_REQUEST') return
       setError('Failed to load products. Please try again.')
     } finally {
-      setLoading(false)
+        // Only the latest request should turn off loading
+      if (requestId === requestIdRef.current) {
+        setLoading(false)
+      }
     }
   }, [pageSize, skip])
 

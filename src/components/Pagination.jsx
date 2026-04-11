@@ -36,7 +36,7 @@ const Pagination = ({
         </button>
 
         <span style={styles.pageInfo}>
-          Page {page} of {totalPages}
+          Page {page} of {totalPages || '...'}
         </span>
 
         <button

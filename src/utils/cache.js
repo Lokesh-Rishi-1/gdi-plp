@@ -47,7 +47,14 @@ class Cache {
   has(limit, skip) {
     const key = this.#key(limit, skip)
     const entry = this.store.get(key)
-    return !!entry && !this.#isExpired(entry)
+    if (!entry) return false
+
+    if (this.#isExpired(entry)) {
+        this.store.delete(key) // evict while we're here
+        return false
+    }
+
+    return true
   }
 
   // Full reset
