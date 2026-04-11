@@ -89,7 +89,7 @@ page. Resetting prevents showing the wrong data.
 - **Map over plain object** for the cache store. Maps are built
   for frequent get/set operations and don't carry prototype
   baggage that plain objects do.
-- **Two token checks in fetchClient** — once after the network
+- **Two token checks in fetchClient** => once after the network
   response, once after JSON parsing. Catches stale requests at
   the earliest possible point rather than doing unnecessary
   parsing work on a response we're going to discard anyway.
@@ -103,6 +103,6 @@ page. Resetting prevents showing the wrong data.
 - **No debounce on pagination buttons** => buttons are disabled
   while loading, so rapid clicks are naturally rate-limited
   without extra logic.
-- **Adapter pattern in fetchClient** — `mapProduct` maps the raw
+- **Adapter pattern in fetchClient** => `mapProduct` maps the raw
   API shape to our internal model. If DummyJSON changes their
   response structure, only this function needs updating.

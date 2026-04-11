@@ -56,4 +56,5 @@ class Cache {
   }
 }
 
+export { Cache }
 export default new Cache()
