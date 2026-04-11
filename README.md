@@ -17,7 +17,7 @@ Open http://localhost:5173
 
 ## Project Structure
 
-![project_structure](<Screenshot 2026-04-11 at 11.57.53 AM.png>)
+![project_structure](<folderStructure.png>)
 
 ---
 
@@ -51,6 +51,9 @@ whole app shares one cache — no split state between components.
   sufficient for this scale.
 - **Private methods** (`#key`, `#isExpired`) hide internals
   from callers. The public interface is just `get`, `set`, `has`.
+- **TTL is configurable** via the constructor (`new Cache(ttl)`). This
+is a deliberate testability decision — tests can pass a short TTL
+like 50ms instead of waiting 30 seconds for entries to expire.
 
 ---
 
@@ -67,6 +70,11 @@ one. If they don't match, the response is discarded silently.
 The hook catches `STALE_REQUEST` errors and does nothing =>
 no error shown to the user, no state update.
 The newer request handles rendering.
+
+`mapProduct` maps the raw API response to our internal model.
+Only the five fields our UI needs are kept and everything else is
+dropped. If the API changes its response shape, only this function
+needs updating. Nothing in the components changes.
 
 ---
 
@@ -106,3 +114,20 @@ page. Resetting prevents showing the wrong data.
 - **Adapter pattern in fetchClient** => `mapProduct` maps the raw
   API shape to our internal model. If DummyJSON changes their
   response structure, only this function needs updating.
+
+---
+
+## Unit Tests
+
+Tests cover the two utility modules that contain the core logic.
+
+```bash
+npm test
+```
+
+**cache.test.js** => verifies TTL expiry, key isolation between
+pages, cache hit/miss behavior, and the `clear` method.
+
+**fetchClient.test.js** => verifies cache integration, race
+condition handling, error states, and the adapter mapping.
+`fetch` is mocked so tests run without a network dependency.
