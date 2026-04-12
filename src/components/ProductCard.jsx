@@ -6,6 +6,7 @@ const ProductCard = ({ product }) => {
       <img
         src={product.thumbnail}
         alt={product.title}
+        loading="lazy"
         style={styles.image}
       />
       <div style={styles.body}>

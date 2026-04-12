@@ -109,4 +109,50 @@ describe('fetchProducts', () => {
     expect(product.brand).toBeUndefined()
     expect(product.rating).toBeUndefined()
   })
+
+  it('ignores stale request when newer request fires', async () => {
+		let resolveFirst
+
+		// First fetch. Slow, will be stale
+		const slowFetch = new Promise(resolve => {
+			resolveFirst = () => resolve({
+				ok: true,
+				json: async () => ({
+					products: [{ id: 1, title: 'Stale', description: 'x', price: 10, thumbnail: 'img.jpg' }],
+					total: 1
+				})
+			})
+		})
+
+		// Second fetch. Fast, current
+		const fastResponse = {
+			ok: true,
+			json: async () => ({
+				products: [{ id: 2, title: 'Current', description: 'x', price: 20, thumbnail: 'img.jpg' }],
+				total: 1
+			})
+		}
+
+		let callCount = 0
+		global.fetch = vi.fn().mockImplementation(() => {
+			callCount++
+			if (callCount === 1) return slowFetch
+			return Promise.resolve(fastResponse)
+		})
+
+		// Fire both. Second fires before first resolves
+		const firstRequest = fetchProducts(16, 0)
+		const secondRequest = fetchProducts(16, 16)
+
+		// Resolve the slow first fetch — now stale
+		resolveFirst()
+
+		// First should be discarded
+		await expect(firstRequest).rejects.toThrow('STALE_REQUEST')
+
+		// Second should succeed with current data
+		const result = await secondRequest
+		expect(result.products[0].title).toBe('Current')
+		expect(result.fromCache).toBe(false)
+  })
 })
