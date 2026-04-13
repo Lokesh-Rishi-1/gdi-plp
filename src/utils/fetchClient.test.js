@@ -4,7 +4,7 @@ import cache from './cache'
 
 // Helper to create a fake successful fetch response
 const mockFetch = (data) => {
-  global.fetch = vi.fn().mockResolvedValue({
+  globalThis.fetch = vi.fn().mockResolvedValue({
     ok: true,
     json: async () => data
   })
@@ -12,7 +12,7 @@ const mockFetch = (data) => {
 
 // Helper to create a fake failed fetch response
 const mockFetchError = (status) => {
-  global.fetch = vi.fn().mockResolvedValue({
+  globalThis.fetch = vi.fn().mockResolvedValue({
     ok: false,
     status
   })
@@ -134,7 +134,7 @@ describe('fetchProducts', () => {
 		}
 
 		let callCount = 0
-		global.fetch = vi.fn().mockImplementation(() => {
+		globalThis.fetch = vi.fn().mockImplementation(() => {
 			callCount++
 			if (callCount === 1) return slowFetch
 			return Promise.resolve(fastResponse)
